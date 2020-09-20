@@ -259,7 +259,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: -1
   m_Sprite: {fileID: 21300000, guid: a7550e15a7431184dab830b6bdc762f9, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -315,7 +315,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   gridSizeX: 8
-  gridSizeY: 10
+  gridSizeY: 12
   startPos: {x: 0, y: 0}
   offset: {x: 0, y: 0}
   tilePrefab: {fileID: 244646712180216788, guid: 47df9fc41776845469768db3b25bae32,
