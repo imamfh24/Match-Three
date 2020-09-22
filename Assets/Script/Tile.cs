@@ -14,13 +14,13 @@ public class Tile : MonoBehaviour
     public float yPosition;
     public int column;
     public int row;
-    private float previousColumn, previousRow;
+    private int previousColumn, previousRow; // Menyimpan indeks kolom dan row yang sebelumnya dipilih
     private Grid grid;
     private GameObject otherTile;
+    public bool isMatched = false;
 
     private void Start()
     {
-        //Menentukan posisi dari tile
         grid = FindObjectOfType<Grid>();
         xPosition = transform.position.x;
         yPosition = transform.position.y;
@@ -30,6 +30,7 @@ public class Tile : MonoBehaviour
 
     private void Update()
     {
+        CheckMates();
         xPosition = (column * grid.offset.x) + grid.startPos.x;
         yPosition = (row * grid.offset.y) + grid.startPos.y;
         SwipeTile();
@@ -128,6 +129,7 @@ public class Tile : MonoBehaviour
             SwipeDownMove();
             Debug.Log("Down Swipe");
         }
+        StartCoroutine(CheckMove());
     }
 
     void SwipeTile()
@@ -157,5 +159,68 @@ public class Tile : MonoBehaviour
             transform.position = tempPosition;
             grid.tiles[column, row] = gameObject;
         }
+    }
+
+    private void CheckMates()
+    {
+        //Check horizontal matching
+        if (column > 0 && column < grid.gridSizeX - 1)
+        {
+            //Check samping kiri dan kanan nya
+            GameObject leftTile = grid.tiles[column - 1, row];
+            GameObject rightTile = grid.tiles[column + 1, row];
+            if (leftTile != null && rightTile != null)
+            {
+                if (leftTile.CompareTag(gameObject.tag) && rightTile.CompareTag(gameObject.tag))
+                {
+                    isMatched = true;
+                    rightTile.GetComponent<Tile>().isMatched = true;
+                    leftTile.GetComponent<Tile>().isMatched = true;
+                }
+            }
+        }
+        //Check vertical matching
+        if (row > 0 && row < grid.gridSizeY - 1)
+        {
+            //Check samping atas dan bawahnya
+            GameObject upTile = grid.tiles[column, row + 1];
+            GameObject downTile = grid.tiles[column, row - 1];
+            if (upTile != null && downTile != null)
+            {
+                if (upTile.CompareTag(gameObject.tag) && downTile.CompareTag(gameObject.tag))
+                {
+                    isMatched = true;
+                    downTile.GetComponent<Tile>().isMatched = true;
+                    upTile.GetComponent<Tile>().isMatched = true;
+                }
+            }
+        }
+
+        if (isMatched)
+        {
+            SpriteRenderer sprite = GetComponent<SpriteRenderer>();
+            sprite.color = Color.grey;
+        }
+    }
+
+    IEnumerator CheckMove()
+    {
+        yield return new WaitForSeconds(.5f);
+        //Cek jika tile nya tidak sama kembalikan, jika ada yang sama panggil DestroyMatches
+        if (otherTile != null)
+        {
+            if (!isMatched && !otherTile.GetComponent<Tile>().isMatched)
+            {
+                otherTile.GetComponent<Tile>().row = row;
+                otherTile.GetComponent<Tile>().column = column;
+                row = previousRow;
+                column = previousColumn;
+            }
+            else
+            {
+                grid.DestroyMatches();
+            }
+        }
+        otherTile = null;
     }
 }
