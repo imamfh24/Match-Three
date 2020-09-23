@@ -108,6 +108,7 @@ public class Grid : MonoBehaviour
         //Destroy tile di indeks tertentu
         if(tiles[column, row].GetComponent<Tile>().isMatched)
         {
+            GameManager.instance.GetScore(10);
             Destroy(tiles[column, row]);
             tiles[column, row] = null;
         }
