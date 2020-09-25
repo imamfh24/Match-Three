@@ -24,6 +24,8 @@ public class Tile : MonoBehaviour
         grid = FindObjectOfType<Grid>();
         xPosition = transform.position.x;
         yPosition = transform.position.y;
+        /*column = Mathf.RoundToInt((xPosition - grid.startPos.x) / grid.offset.x);
+        row = Mathf.RoundToInt((yPosition - grid.startPos.y) / grid.offset.x);*/
         column = Mathf.RoundToInt((xPosition - grid.startPos.x) / grid.offset.x);
         row = Mathf.RoundToInt((yPosition - grid.startPos.y) / grid.offset.x);
     }
@@ -38,18 +40,17 @@ public class Tile : MonoBehaviour
 
     void SwipeRightMove()
     {
-        if(column + 1 < grid.gridSizeX)
+        if (column + 1 < grid.gridSizeX)
         {
-            //Menukar posisi tile dengan sebelah kanannya
+            //Menukar posisi tile dengan sebelah kanan nya
             otherTile = grid.tiles[column + 1, row];
             otherTile.GetComponent<Tile>().column -= 1;
             column += 1;
         }
     }
-
     void SwipeUpMove()
     {
-        if(row + 1 < grid.gridSizeY)
+        if (row + 1 < grid.gridSizeY)
         {
             //Menukar posisi tile dengan sebelah atasnya
             otherTile = grid.tiles[column, row + 1];
@@ -57,10 +58,9 @@ public class Tile : MonoBehaviour
             row += 1;
         }
     }
-
     void SwipeLeftMove()
     {
-        if(column - 1 >= 0)
+        if (column - 1 >= 0)
         {
             //Menukar posisi tile dengan sebelah kiri nya
             otherTile = grid.tiles[column - 1, row];
@@ -68,10 +68,9 @@ public class Tile : MonoBehaviour
             column -= 1;
         }
     }
-
     void SwipeDownMove()
     {
-        if(row - 1 >= 0)
+        if (row - 1 >= 0)
         {
             //Menukar posisi tile dengan sebelah bawahnya
             otherTile = grid.tiles[column, row - 1];
@@ -90,7 +89,10 @@ public class Tile : MonoBehaviour
     {
         //Mendapatkan titik akhir sentuhan jari
         finalPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        CalculateAngle();
+        if (!GameManager.instance.Finish)
+        {
+            CalculateAngle();
+        }
     }
 
     private void CalculateAngle()
@@ -107,57 +109,54 @@ public class Tile : MonoBehaviour
 
         if (swipeAngle > -45 && swipeAngle <= 45)
         {
-            //Right Swipe, tambah method SwipeRight
+            //Right swipe
             SwipeRightMove();
-            Debug.Log("Right Swipe");
         }
         else if (swipeAngle > 45 && swipeAngle <= 135)
         {
-            //Up Swipe, tambah method SwipeUp
+            //Up swipe
             SwipeUpMove();
-            Debug.Log("Up Swipe");
         }
         else if (swipeAngle > 135 || swipeAngle <= -135)
         {
-            //Left Swipe, tambah method SwipeLeft
+            //Left swipe
             SwipeLeftMove();
-            Debug.Log("Left Swipe");
         }
         else if (swipeAngle < -45 && swipeAngle >= -135)
         {
-            //Down Swipe, tambah method SwipeDown
+            //Down swipe
             SwipeDownMove();
-            Debug.Log("Down Swipe");
         }
         StartCoroutine(CheckMove());
     }
 
     void SwipeTile()
     {
-        if(Mathf.Abs(xPosition - transform.position.x) > .1f)
+        if (Mathf.Abs(xPosition - transform.position.x) > .1)
         {
             //Move towards the target
-            Vector3 tempPosition = new Vector2(xPosition, transform.position.y);
+            tempPosition = new Vector2(xPosition, transform.position.y);
             transform.position = Vector2.Lerp(transform.position, tempPosition, .4f);
-        } else
+        }
+        else
         {
             //Directly set the position
             tempPosition = new Vector2(xPosition, transform.position.y);
             transform.position = tempPosition;
-            grid.tiles[column, row] = gameObject;
+            grid.tiles[column, row] = this.gameObject;
         }
-
-        if(Mathf.Abs(yPosition - transform.position.y) > .1f)
+        if (Mathf.Abs(yPosition - transform.position.y) > .1)
         {
             //Move towards the target
-            Vector3 tempPosition = new Vector2(transform.position.x, yPosition);
+            tempPosition = new Vector2(transform.position.x, yPosition);
             transform.position = Vector2.Lerp(transform.position, tempPosition, .4f);
-        } else
+        }
+        else
         {
             //Directly set the position
-            Vector3 tempPosition = new Vector2(transform.position.x, yPosition);
+            tempPosition = new Vector2(transform.position.x, yPosition);
             transform.position = tempPosition;
-            grid.tiles[column, row] = gameObject;
+            grid.tiles[column, row] = this.gameObject;
         }
     }
 
@@ -215,9 +214,11 @@ public class Tile : MonoBehaviour
                 otherTile.GetComponent<Tile>().column = column;
                 row = previousRow;
                 column = previousColumn;
+                GameManager.instance.ComboTile(false);
             }
             else
             {
+                /*GameManager.instance.ComboTile(true);*/
                 grid.DestroyMatches();
             }
         }

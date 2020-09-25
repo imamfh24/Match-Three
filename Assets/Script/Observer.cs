@@ -11,15 +11,19 @@ public abstract class Observer : MonoBehaviour
 public abstract class Subject : MonoBehaviour
 {
     //List semua observer
-    private List<Observer> observers = new List<Observer>();
+    private List<Observer> _observers = new List<Observer>();
 
     //Register semua observer
-    public void RegisterObserver(Observer observer) { observers.Add(observer); }
+    public void RegisterObserver(Observer observer)
+    {
+        _observers.Add(observer);
+    }
 
     //Notify
     public void Notify(string value)
     {
-        foreach (var observer in observers) observer.OnNotify(value);
+        foreach (var observer in _observers)
+            observer.OnNotify(value);
     }
 }
 

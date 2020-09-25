@@ -34,12 +34,12 @@ public class Grid : MonoBehaviour
         tiles = new GameObject[gridSizeX, gridSizeY];
 
         // Menentukan offset, didapatkan dari size prefab
-        Vector2 offset = tilePrefab.GetComponent<SpriteRenderer>().bounds.size;
+        offset = tilePrefab.GetComponent<SpriteRenderer>().bounds.size;
         // Menentukan posisi awal
-        Vector2 startPos = transform.position + (Vector3.left * (offset.x * gridSizeX / 2)) + (Vector3.down * (offset.y * gridSizeY / 3));
+        startPos = transform.position + (Vector3.left * (offset.x * gridSizeX / 2)) + (Vector3.down * (offset.y * gridSizeY / 3));
 
         // Looping untuk membuat tile
-        for(int x = 0; x < gridSizeX; x++)
+        for (int x = 0; x < gridSizeX; x++)
         {
             for(int y = 0; y < gridSizeY; y++)
             {
@@ -118,12 +118,13 @@ public class Grid : MonoBehaviour
 
     public void DestroyMatches()
     {
-        //Lakukan looping untuk cek tile yang null lalu di destroy
-        for(int i = 0; i < gridSizeX; i++)
+        GameManager.instance.ComboTile(true);
+        //Lakukan looping untuk cek tile yang null lalu di Destroy
+        for (int i = 0; i < gridSizeX; i++)
         {
-            for(int j = 0; j < gridSizeY; j++)
+            for (int j = 0; j < gridSizeY; j++)
             {
-                if(tiles[i, j] != null)
+                if (tiles[i, j] != null)
                 {
                     DestroyMatchesAt(i, j);
                 }

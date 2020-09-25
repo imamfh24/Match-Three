@@ -33,11 +33,12 @@ public class ObjectPooler : MonoBehaviour
     // AddInToPool untuk menambahkan prefab object ke dalam pool
     private void AddInToPool()
     {
-        pools.ForEach((pool) => {
+        pools.ForEach((pool) =>
+        {
             Queue<GameObject> objectPool = new Queue<GameObject>();
 
             int i = 0;
-            while(i < pool.size)
+            while (i < pool.size)
             {
                 GameObject obj = Instantiate(pool.prefab);
                 obj.SetActive(false);
@@ -46,16 +47,17 @@ public class ObjectPooler : MonoBehaviour
             }
 
             poolDictionary.Add(pool.tag, objectPool);
+
         });
     }
 
     //Spawn from pool digunakan untuk mengambil object dari Pool
     public GameObject SpawnFromPool(string tag, Vector3 position, Quaternion rotation)
     {
-        //Cek jika dalam Pool Dictionary terdapat object yang di request
+        //Cek jika dalam Pool doctionary terdapat obejct yang direquest
         if (!poolDictionary.ContainsKey(tag))
         {
-            Debug.LogWarning("Object with tag " + tag + " doesnt exits");
+            Debug.LogWarning("Object with tag " + tag + " doesnt exist");
             return null;
         }
 
@@ -67,19 +69,5 @@ public class ObjectPooler : MonoBehaviour
         poolDictionary[tag].Enqueue(objectToSpawn);
 
         return objectToSpawn;
-
-        return null;
-    }
-
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
     }
 }
